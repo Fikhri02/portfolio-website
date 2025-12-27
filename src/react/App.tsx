@@ -1,58 +1,44 @@
-import React from 'react';
-import Navigation from './components/Navigation/Navigation';
-import Hero from './components/Hero/Hero';
-import ProjectsGallery from './components/Projects/ProjectsGallery';
-import VueInReact from '@integration/VueInReact';
+import { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Work from './components/Work';
+import About from './components/About';
+import Contact from './components/Contact';
+import '../index.css';
 
-// Import Vue components
-import SkillsShowcase from '@vue-components/components/Skills/SkillsShowcase.vue';
-import AboutSection from '@vue-components/components/About/AboutSection.vue';
-import ContactForm from '@vue-components/components/Contact/ContactForm.vue';
+function App() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved === 'dark';
+      return true; // Default to dark
+    }
+    return true;
+  });
 
-import '@styles/design-system.css';
-import '@styles/animations.css';
-import './App.css';
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
-const App: React.FC = () => {
+  const toggleTheme = () => setIsDark(!isDark);
+
   return (
-    <div className="app">
-      <Navigation />
-      
-      {/* React Components */}
-      <Hero />
-      
-      {/* Vue Component - About Section */}
-      <VueInReact component={AboutSection} />
-      
-      {/* Vue Component - Skills */}
-      <VueInReact component={SkillsShowcase} />
-      
-      {/* React Component - Projects */}
-      <ProjectsGallery />
-      
-      {/* Vue Component - Contact */}
-      <VueInReact component={ContactForm} />
-      
-      <footer className="footer">
-        <div className="container">
-          <p className="footer-text">
-            © 2025 Alex Johnson. Built with React & Vue.
-          </p>
-          <div className="footer-links">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              Twitter
-            </a>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <>
+      <Navbar isDark={isDark} toggleTheme={toggleTheme} />
+      <main>
+        <Hero />
+        <Work />
+        <About />
+        <Contact />
+      </main>
+    </>
   );
-};
+}
 
 export default App;
